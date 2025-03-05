@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clear Storage</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #1a1a1a;
+        color: #fff;
+      }
+      h1 {
+        color: #fff;
+      }
+      button {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+      button:hover {
+        background-color: #2563eb;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #2d2d2d;
+        border-radius: 5px;
+        min-height: 100px;
+      }
+      .success {
+        color: #10b981;
+      }
+      .error {
+        color: #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Clear Storage Utility</h1>
+    <p>Use the buttons below to clear different types of storage:</p>
+
+    <div>
+      <button id="clearLocalStorage">Clear Local Storage</button>
+      <button id="clearIndexedDB">Clear IndexedDB</button>
+      <button id="clearAll">Clear All Storage</button>
+    </div>
+
+    <div class="result" id="result">Results will appear here...</div>
+
+    <script>
+      const resultEl = document.getElementById("result");
+
+      // Clear Local Storage
+      document
+        .getElementById("clearLocalStorage")
+        .addEventListener("click", () => {
+          try {
+            localStorage.clear();
+            resultEl.innerHTML =
+              '<p class="success">✅ Local Storage cleared successfully!</p>';
+          } catch (error) {
+            resultEl.innerHTML = `<p class="error">❌ Error clearing Local Storage: ${error.message}</p>`;
+          }
+        });
+
+      // Clear IndexedDB
+      document
+        .getElementById("clearIndexedDB")
+        .addEventListener("click", async () => {
+          try {
+            const DB_NAME = "gradient-generator-db";
+
+            // List all databases
+            const databases = await indexedDB.databases();
+            resultEl.innerHTML = "<p>Checking databases...</p>";
+
+            if (databases.some((db) => db.name === DB_NAME)) {
+              // Open the database
+              const request = indexedDB.open(DB_NAME);
+
+              request.onsuccess = function (event) {
+                const db = event.target.result;
+
+                // Get all object store names
+                const storeNames = Array.from(db.objectStoreNames);
+
+                if (storeNames.length === 0) {
+                  resultEl.innerHTML +=
+                    "<p>No object stores found in the database.</p>";
+                  return;
+                }
+
+                // Create a transaction to clear all stores
+                const transaction = db.transaction(storeNames, "readwrite");
+
+                storeNames.forEach((storeName) => {
+                  const objectStore = transaction.objectStore(storeName);
+                  const clearRequest = objectStore.clear();
+
+                  clearRequest.onsuccess = function () {
+                    resultEl.innerHTML += `<p class="success">✅ Object store "${storeName}" cleared successfully!</p>`;
+                  };
+
+                  clearRequest.onerror = function () {
+                    resultEl.innerHTML += `<p class="error">❌ Error clearing object store "${storeName}"</p>`;
+                  };
+                });
+
+                transaction.oncomplete = function () {
+                  resultEl.innerHTML +=
+                    '<p class="success">✅ All IndexedDB stores cleared successfully!</p>';
+                  db.close();
+                };
+
+                transaction.onerror = function () {
+                  resultEl.innerHTML += `<p class="error">❌ Transaction error: ${transaction.error}</p>`;
+                  db.close();
+                };
+              };
+
+              request.onerror = function () {
+                resultEl.innerHTML = `<p class="error">❌ Error opening database: ${request.error}</p>`;
+              };
+            } else {
+              resultEl.innerHTML = `<p>Database "${DB_NAME}" not found.</p>`;
+            }
+          } catch (error) {
+            resultEl.innerHTML = `<p class="error">❌ Error clearing IndexedDB: ${error.message}</p>`;
+          }
+        });
+
+      // Clear All Storage
+      document
+        .getElementById("clearAll")
+        .addEventListener("click", async () => {
+          try {
+            // Clear localStorage
+            localStorage.clear();
+            resultEl.innerHTML =
+              '<p class="success">✅ Local Storage cleared successfully!</p>';
+
+            // Clear IndexedDB (trigger the IndexedDB clear button)
+            document.getElementById("clearIndexedDB").click();
+
+            resultEl.innerHTML +=
+              '<p class="success">✅ All storage cleared successfully!</p>';
+          } catch (error) {
+            resultEl.innerHTML = `<p class="error">❌ Error clearing all storage: ${error.message}</p>`;
+          }
+        });
+    </script>
+  </body>
+</html>

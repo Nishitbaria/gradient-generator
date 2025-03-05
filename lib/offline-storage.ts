@@ -1,3 +1,16 @@
+// Add this type declaration at the top of the file
+declare global {
+  interface ServiceWorkerRegistration {
+    sync: {
+      register(tag: string): Promise<void>;
+    }
+  }
+
+  interface Window {
+    SyncManager: any;
+  }
+}
+
 import type { GradientHistoryItem } from "./store"
 
 // IndexedDB setup
@@ -89,6 +102,25 @@ export async function deleteLocalGradient(id: string): Promise<void> {
     }
   } catch (error) {
     console.error("Error deleting local gradient:", error)
+  }
+}
+
+// Clear all gradients from local storage
+export async function clearLocalGradients(): Promise<void> {
+  try {
+    const db = await openDB()
+    const tx = db.transaction(GRADIENTS_STORE, "readwrite")
+    const store = tx.objectStore(GRADIENTS_STORE)
+
+    await new Promise<void>((resolve, reject) => {
+      const request = store.clear()
+      request.onsuccess = () => resolve()
+      request.onerror = () => reject(request.error)
+    })
+
+    console.log("All gradients cleared from IndexedDB")
+  } catch (error) {
+    console.error("Error clearing local gradients:", error)
   }
 }
 

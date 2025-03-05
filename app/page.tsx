@@ -10,7 +10,7 @@ const GradientGenerator = dynamic(() => import("@/components/gradient-generator"
   ssr: true,
   loading: () => (
     <div className="w-full max-w-4xl mx-auto animate-pulse">
-      <div className="h-64 bg-app-muted rounded-2xl mb-8"></div>
+      <div className="h-64 bg-gray-800/50 rounded-2xl mb-8"></div>
     </div>
   ),
 })
@@ -24,11 +24,11 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-app-background to-app-muted dark:from-gray-950 dark:to-black flex flex-col items-center justify-center p-4 py-32 pb-40">
+      <main className="min-h-screen bg-gradient-to-br from-gray-950 to-black flex flex-col items-center justify-center p-4 py-32 pb-40">
         <Suspense
           fallback={
             <div className="w-full max-w-4xl mx-auto animate-pulse">
-              <div className="h-64 bg-app-muted dark:bg-gray-800/50 rounded-2xl mb-8"></div>
+              <div className="h-64 bg-gray-800/50 rounded-2xl mb-8"></div>
             </div>
           }
         >

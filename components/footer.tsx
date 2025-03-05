@@ -1,12 +1,10 @@
 "use client"
 import { motion } from "framer-motion"
-import { MonitorSmartphone, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useTheme } from "next-themes"
+import Link from "next/link"
+import { Trash2 } from "lucide-react"
 
 export function Footer() {
-  const { theme, setTheme } = useTheme()
-
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -19,50 +17,16 @@ export function Footer() {
           <p className="text-app-foreground/70 dark:text-white/70 text-sm">
             © {new Date().getFullYear()} GradientLab. All rights reserved.
           </p>
-          <div className="flex items-center gap-2">
+          <Link href="/clear-storage.html" target="_blank">
             <Button
+              size="sm"
               variant="ghost"
-              size="icon"
-              className={`h-8 w-8 hover:bg-app-muted/50 dark:hover:bg-white/5 ${
-                theme === "system"
-                  ? "bg-app-muted/50 dark:bg-white/10 text-app-foreground dark:text-white"
-                  : "text-app-foreground/70 dark:text-white/70 hover:text-app-foreground dark:hover:text-white"
-              }`}
-              onClick={() => setTheme("system")}
-              aria-label="System theme"
+              className="h-8 text-xs text-white/70 hover:text-white"
             >
-              <MonitorSmartphone className="h-4 w-4" />
-              <span className="sr-only">System theme</span>
+              <Trash2 className="h-3 w-3 mr-1" />
+              Clear Storage
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 hover:bg-app-muted/50 dark:hover:bg-white/5 ${
-                theme === "light"
-                  ? "bg-app-muted/50 dark:bg-white/10 text-app-foreground dark:text-white"
-                  : "text-app-foreground/70 dark:text-white/70 hover:text-app-foreground dark:hover:text-white"
-              }`}
-              onClick={() => setTheme("light")}
-              aria-label="Light theme"
-            >
-              <Sun className="h-4 w-4" />
-              <span className="sr-only">Light theme</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className={`h-8 w-8 hover:bg-app-muted/50 dark:hover:bg-white/5 ${
-                theme === "dark"
-                  ? "bg-app-muted/50 dark:bg-white/10 text-app-foreground dark:text-white"
-                  : "text-app-foreground/70 dark:text-white/70 hover:text-app-foreground dark:hover:text-white"
-              }`}
-              onClick={() => setTheme("dark")}
-              aria-label="Dark theme"
-            >
-              <Moon className="h-4 w-4" />
-              <span className="sr-only">Dark theme</span>
-            </Button>
-          </div>
+          </Link>
         </div>
       </div>
     </motion.footer>

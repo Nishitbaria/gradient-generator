@@ -16,6 +16,7 @@ interface GradientHistoryProps {
 export function GradientHistory({ onClose }: GradientHistoryProps) {
   const { history, clearHistory, removeFromHistory, applyFromHistory, generateRandomGradient } = useGradientStore()
   const [selectedHistoryItem, setSelectedHistoryItem] = useState<string | null>(null)
+  const [isClearing, setIsClearing] = useState(false)
 
   // Group history items by date
   const groupHistoryByDate = () => {
@@ -83,6 +84,19 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
     removeFromHistory(id)
   }
 
+  // Handle clearing all history
+  const handleClearHistory = async () => {
+    setIsClearing(true)
+    try {
+      await clearHistory()
+      // Force a reload to ensure everything is cleared
+      window.location.reload()
+    } catch (error) {
+      console.error("Error clearing history:", error)
+      setIsClearing(false)
+    }
+  }
+
   return (
     <>
       <div className="flex justify-between items-center p-3 border-b border-app-card-border dark:border-white/10 sticky top-0 bg-app-card/95 dark:bg-gray-900/95 z-10">
@@ -97,10 +111,11 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
               size="sm"
               variant="ghost"
               className="h-8 text-xs text-app-muted-foreground dark:text-gray-400 hover:text-app-foreground dark:hover:text-white"
-              onClick={clearHistory}
+              onClick={handleClearHistory}
+              disabled={isClearing}
             >
               <Trash2 className="h-3 w-3 mr-1" />
-              Clear All
+              {isClearing ? "Clearing..." : "Clear All"}
             </Button>
           )}
           <Button
