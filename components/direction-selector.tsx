@@ -62,7 +62,7 @@ export function DirectionSelector({ value, onChange, directions }: DirectionSele
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute z-[100] mt-2 w-64 bg-app-card dark:bg-gray-900 border border-app-card-border dark:border-gray-800 rounded-xl shadow-xl overflow-hidden"
+            className="absolute z-100 mt-2 w-64 bg-app-card dark:bg-gray-900 border border-app-card-border dark:border-gray-800 rounded-xl shadow-xl overflow-hidden"
             initial={{ opacity: 0, y: -10, height: 0 }}
             animate={{ opacity: 1, y: 0, height: "auto" }}
             exit={{ opacity: 0, y: -10, height: 0 }}

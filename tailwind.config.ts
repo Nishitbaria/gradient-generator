@@ -2,7 +2,7 @@ import type { Config } from 'tailwindcss';
 import tailwindAnimate from 'tailwindcss-animate';
 
 const config: Config = {
-    darkMode: ["class"],
+    darkMode: "class",
     content: [
         "./pages/**/*.{ts,tsx}",
         "./components/**/*.{ts,tsx}",
@@ -12,14 +12,14 @@ const config: Config = {
     ],
     safelist: [
         // Add all possible gradient direction classes
-        "bg-gradient-to-r",
-        "bg-gradient-to-l",
-        "bg-gradient-to-t",
-        "bg-gradient-to-b",
-        "bg-gradient-to-tr",
-        "bg-gradient-to-tl",
-        "bg-gradient-to-br",
-        "bg-gradient-to-bl",
+        "bg-linear-to-r",
+        "bg-linear-to-l",
+        "bg-linear-to-t",
+        "bg-linear-to-b",
+        "bg-linear-to-tr",
+        "bg-linear-to-tl",
+        "bg-linear-to-br",
+        "bg-linear-to-bl",
         // Add all possible color combinations
         ...["from", "via", "to"].flatMap((prefix) =>
             [
@@ -50,7 +50,7 @@ const config: Config = {
                 "transparent",
             ].flatMap((color) =>
                 color === "white" || color === "black" || color === "transparent"
-                    ? [`${prefix}-${color}`]
+                    ? [`gradient-${prefix}-${color}`]
                     : [
                         "50",
                         "100",
@@ -62,7 +62,7 @@ const config: Config = {
                         "700",
                         "800",
                         "900",
-                    ].map((intensity) => `${prefix}-${color}-${intensity}`)
+                    ].map((intensity) => `gradient-${prefix}-${color}-${intensity}`)
             )
         ),
     ],

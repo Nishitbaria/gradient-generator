@@ -39,7 +39,7 @@ export function AccessibilityChecker() {
   // Auto-suggest initial text color based on gradient
   useEffect(() => {
     if (cssGradient) {
-      const suggestedColor = getDefaultTextColor(cssGradient)
+      const suggestedColor = getDefaultTextColor(cssGradient())
       setTextColor(suggestedColor)
     }
   }, [cssGradient])
@@ -52,13 +52,13 @@ export function AccessibilityChecker() {
     setTimeout(() => {
       try {
         // Extract representative color from gradient for similarity check
-        const bgColor = extractRepresentativeColor(cssGradient)
+        const bgColor = extractRepresentativeColor(cssGradient())
 
         // Check if colors are too similar
         const similarityCheck = areColorsTooSimilar(textColor, bgColor)
         setColorsAreTooSimilar(similarityCheck)
 
-        const ratio = calculateContrastRatio(textColor, cssGradient)
+        const ratio = calculateContrastRatio(textColor, cssGradient())
         setContrastRatio(ratio)
 
         // Check WCAG compliance
@@ -101,7 +101,7 @@ export function AccessibilityChecker() {
 
   const handleGetSuggestions = () => {
     setShowSuggestions(true)
-    const textSuggestions = getTextColorSuggestions(cssGradient)
+    const textSuggestions = getTextColorSuggestions(cssGradient())
     setSuggestions(textSuggestions)
   }
 
@@ -176,11 +176,11 @@ export function AccessibilityChecker() {
               {/* Preview Section */}
               <div className="relative rounded-xl overflow-hidden">
                 <div
-                  className={cn(
-                    "p-8 flex items-center justify-center w-full h-full",
-                    gradientClass(), // Make sure to call the function if it's a function
-                  )}
-                  style={{ minHeight: "120px" }}
+                  className="p-8 flex items-center justify-center w-full h-full"
+                  style={{
+                    minHeight: "120px",
+                    background: cssGradient()
+                  }}
                 >
                   <p
                     className="text-center max-w-md transition-all duration-300"

@@ -83,7 +83,7 @@ export function GradientControls() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <ColorSelector
             label="From"
-            value={`from-${fromColor.color}-${fromColor.intensity}`}
+            value={`gradient-from-${fromColor.color}-${fromColor.intensity}`}
             color={fromColor.color}
             intensity={fromColor.intensity}
             onChange={(color, intensity) => setFromColor(color, intensity)}
@@ -100,7 +100,7 @@ export function GradientControls() {
             >
               <ColorSelector
                 label="Via"
-                value={`via-${viaColor.color}-${viaColor.intensity}`}
+                value={`gradient-via-${viaColor.color}-${viaColor.intensity}`}
                 color={viaColor.color}
                 intensity={viaColor.intensity}
                 onChange={(color, intensity) => setViaColor(color, intensity)}
@@ -112,7 +112,7 @@ export function GradientControls() {
 
           <ColorSelector
             label="To"
-            value={`to-${toColor.color}-${toColor.intensity}`}
+            value={`gradient-to-${toColor.color}-${toColor.intensity}`}
             color={toColor.color}
             intensity={toColor.intensity}
             onChange={(color, intensity) => setToColor(color, intensity)}

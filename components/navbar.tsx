@@ -26,7 +26,7 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-gray-700 via-gray-500 to-gray-900"></div>
+            <div className="h-8 w-8 rounded-lg bg-linear-to-br gradient-from-gray-700 gradient-via-gray-500 gradient-to-gray-900"></div>
             <span className="font-bold text-app-foreground dark:text-white text-xl">GradientLab</span>
           </Link>
 

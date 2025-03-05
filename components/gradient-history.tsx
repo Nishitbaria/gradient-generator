@@ -60,10 +60,13 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
 
   // Format color class
   const formatColorClass = (prefix: string, colorObj: { color: string; intensity: string }) => {
-    if (colorObj.color === "white") return `${prefix}-white`
-    if (colorObj.color === "transparent") return `${prefix}-transparent`
-    if (colorObj.color === "black") return `${prefix}-black`
-    return `${prefix}-${colorObj.color}-${colorObj.intensity}`
+    // In Tailwind v4, gradient color classes use the 'gradient-' prefix
+    const gradientPrefix = `gradient-${prefix}`
+
+    if (colorObj.color === "white") return `${gradientPrefix}-white`
+    if (colorObj.color === "transparent") return `${gradientPrefix}-transparent`
+    if (colorObj.color === "black") return `${gradientPrefix}-black`
+    return `${gradientPrefix}-${colorObj.color}-${colorObj.intensity}`
   }
 
   // Group history items
@@ -76,6 +79,69 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
 
     // Clear selection after a moment
     setTimeout(() => setSelectedHistoryItem(null), 1500)
+  }
+
+  // Generate CSS gradient string for a history item
+  const getCssGradientForHistoryItem = (item: GradientHistoryItem): string => {
+    // Get the CSS direction
+    const directionMap: Record<string, string> = {
+      "bg-gradient-to-r": "to right",
+      "bg-gradient-to-l": "to left",
+      "bg-gradient-to-t": "to top",
+      "bg-gradient-to-b": "to bottom",
+      "bg-gradient-to-tr": "to top right",
+      "bg-gradient-to-tl": "to top left",
+      "bg-gradient-to-br": "to bottom right",
+      "bg-gradient-to-bl": "to bottom left",
+      "bg-linear-to-r": "to right",
+      "bg-linear-to-l": "to left",
+      "bg-linear-to-t": "to top",
+      "bg-linear-to-b": "to bottom",
+      "bg-linear-to-tr": "to top right",
+      "bg-linear-to-tl": "to top left",
+      "bg-linear-to-br": "to bottom right",
+      "bg-linear-to-bl": "to bottom left",
+    }
+    const cssDirection = directionMap[item.direction] || "to right"
+
+    // Get color values
+    const getColorValue = (colorObj: { color: string; intensity: string }): string => {
+      if (colorObj.color === "white") return "#ffffff"
+      if (colorObj.color === "transparent") return "transparent"
+      if (colorObj.color === "black") return "#000000"
+
+      // Use a simplified approach for demo purposes
+      // In a real app, you'd use a complete color mapping
+      const intensityMap: Record<string, number> = {
+        "50": 0.1, "100": 0.2, "200": 0.3, "300": 0.4, "400": 0.5,
+        "500": 0.6, "600": 0.7, "700": 0.8, "800": 0.9, "900": 1.0
+      }
+
+      // Return a representative color based on the color name and intensity
+      switch (colorObj.color) {
+        case "red": return `rgba(220, 38, 38, ${intensityMap[colorObj.intensity]})`
+        case "blue": return `rgba(37, 99, 235, ${intensityMap[colorObj.intensity]})`
+        case "green": return `rgba(22, 163, 74, ${intensityMap[colorObj.intensity]})`
+        case "purple": return `rgba(147, 51, 234, ${intensityMap[colorObj.intensity]})`
+        case "pink": return `rgba(236, 72, 153, ${intensityMap[colorObj.intensity]})`
+        case "yellow": return `rgba(234, 179, 8, ${intensityMap[colorObj.intensity]})`
+        case "orange": return `rgba(249, 115, 22, ${intensityMap[colorObj.intensity]})`
+        case "teal": return `rgba(20, 184, 166, ${intensityMap[colorObj.intensity]})`
+        case "indigo": return `rgba(79, 70, 229, ${intensityMap[colorObj.intensity]})`
+        case "gray": return `rgba(107, 114, 128, ${intensityMap[colorObj.intensity]})`
+        default: return `rgba(100, 100, 100, ${intensityMap[colorObj.intensity]})`
+      }
+    }
+
+    // Build the gradient string
+    let gradientString = `linear-gradient(${cssDirection}`
+    gradientString += `, ${getColorValue(item.fromColor)}`
+    if (item.useVia && item.viaColor) {
+      gradientString += `, ${getColorValue(item.viaColor)}`
+    }
+    gradientString += `, ${getColorValue(item.toColor)})`
+
+    return gradientString
   }
 
   // Remove a single item from history
@@ -167,27 +233,22 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
                         onClick={() => handleApplyFromHistory(item)}
                       >
                         <div
-                          className={cn(
-                            "w-full h-full",
-                            item.direction,
-                            formatColorClass("from", item.fromColor),
-                            item.useVia && item.viaColor ? formatColorClass("via", item.viaColor) : "",
-                            formatColorClass("to", item.toColor),
-                          )}
+                          className="w-full h-full"
+                          style={{ background: getCssGradientForHistoryItem(item) }}
                         />
                       </button>
                       <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Button
                           size="sm"
                           variant="secondary"
-                          className="h-6 w-6 p-0 bg-black/40 hover:bg-black/60 backdrop-blur-sm text-white"
+                          className="h-6 w-6 p-0 bg-black/40 hover:bg-black/60 backdrop-blur-xs text-white"
                           onClick={(e) => handleRemoveFromHistory(item.id, e)}
                         >
                           <X className="h-3 w-3" />
                         </Button>
                       </div>
                       <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="text-xs bg-black/40 backdrop-blur-sm text-white px-1.5 py-0.5 rounded">
+                        <div className="text-xs bg-black/40 backdrop-blur-xs text-white px-1.5 py-0.5 rounded">
                           {format(new Date(item.timestamp), "h:mm a")}
                         </div>
                       </div>

@@ -34,7 +34,11 @@ export default function GradientGenerator() {
     >
       {/* Title Section - Mobile Optimized */}
       <div className="text-center mb-6 md:mb-8">
-        <h1 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-green-300 via-blue-500 to-purple-600 animate-aurora">
+        <h1 className="text-2xl md:text-5xl font-bold mb-3 md:mb-4 bg-clip-text text-transparent animate-aurora"
+          style={{
+            background: 'linear-gradient(to right, #86efac, #3b82f6, #a855f7)',
+            WebkitBackgroundClip: 'text'
+          }}>
           Gradient Generator
         </h1>
         <p className="text-gray-400 text-sm md:text-lg max-w-xl mx-auto px-4">

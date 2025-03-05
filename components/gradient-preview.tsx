@@ -9,12 +9,15 @@ interface GradientPreviewProps {
 }
 
 export function GradientPreview({ type, gradientClass, cssGradient }: GradientPreviewProps) {
-  // Use the Tailwind classes directly instead of inline styles
+  // Use inline styles for the gradient in Tailwind v4
   switch (type) {
     case "card":
       return (
         <div className="w-full rounded-xl overflow-hidden">
-          <div className={cn("w-full rounded-lg overflow-hidden shadow-lg", gradientClass)}>
+          <div
+            className="w-full rounded-lg overflow-hidden shadow-lg"
+            style={{ background: cssGradient }}
+          >
             <div className="p-6 h-64 flex flex-col justify-between backdrop-blur-[2px]">
               <div>
                 <h3 className="text-white font-bold text-xl mb-2">Card Title</h3>
@@ -48,10 +51,8 @@ export function GradientPreview({ type, gradientClass, cssGradient }: GradientPr
           <div className="p-8 flex flex-col items-center justify-center bg-gray-900/70 rounded-lg border border-white/5 h-64 gap-8">
             <div className="flex gap-4 items-center">
               <button
-                className={cn(
-                  "px-6 py-3 rounded-md text-white font-medium shadow-lg transition-transform hover:scale-105",
-                  gradientClass,
-                )}
+                className="px-6 py-3 rounded-md text-white font-medium shadow-lg transition-transform hover:scale-105"
+                style={{ background: cssGradient }}
               >
                 Primary Button
               </button>
@@ -63,28 +64,22 @@ export function GradientPreview({ type, gradientClass, cssGradient }: GradientPr
 
             <div className="flex gap-4">
               <button
-                className={cn(
-                  "px-3 py-1.5 rounded-md text-white font-medium text-sm shadow-md transition-transform hover:scale-105",
-                  gradientClass,
-                )}
+                className="px-3 py-1.5 rounded-md text-white font-medium text-sm shadow-md transition-transform hover:scale-105"
+                style={{ background: cssGradient }}
               >
                 Small
               </button>
 
               <button
-                className={cn(
-                  "px-5 py-2.5 rounded-md text-white font-medium shadow-md transition-transform hover:scale-105",
-                  gradientClass,
-                )}
+                className="px-5 py-2.5 rounded-md text-white font-medium shadow-md transition-transform hover:scale-105"
+                style={{ background: cssGradient }}
               >
                 Medium
               </button>
 
               <button
-                className={cn(
-                  "px-8 py-4 rounded-md text-white font-bold shadow-xl transition-transform hover:scale-105",
-                  gradientClass,
-                )}
+                className="px-8 py-4 rounded-md text-white font-bold shadow-xl transition-transform hover:scale-105"
+                style={{ background: cssGradient }}
               >
                 Large
               </button>
@@ -102,7 +97,10 @@ export function GradientPreview({ type, gradientClass, cssGradient }: GradientPr
     case "navbar":
       return (
         <div className="w-full rounded-xl overflow-hidden">
-          <div className={cn("w-full rounded-lg shadow-lg overflow-hidden", gradientClass)}>
+          <div
+            className="w-full rounded-lg shadow-lg overflow-hidden"
+            style={{ background: cssGradient }}
+          >
             <div className="px-6 py-4 flex justify-between items-center backdrop-blur-[2px]">
               <div className="font-bold text-white text-xl">Logo</div>
               <div className="hidden md:flex gap-6">
@@ -137,8 +135,11 @@ export function GradientPreview({ type, gradientClass, cssGradient }: GradientPr
     case "hero":
       return (
         <div className="w-full rounded-xl overflow-hidden">
-          <div className={cn("w-full h-64 rounded-lg overflow-hidden shadow-lg", gradientClass)}>
-            <div className="p-8 h-full flex flex-col justify-center items-center text-center backdrop-blur-[2px]">
+          <div
+            className="w-full h-64 rounded-lg overflow-hidden shadow-lg"
+            style={{ background: cssGradient }}
+          >
+            <div className="h-full flex flex-col items-center justify-center p-8 backdrop-blur-[2px]">
               <h2 className="text-white font-bold text-3xl mb-3">Welcome to Our Platform</h2>
               <p className="text-white/90 max-w-md mb-5">
                 This is how your gradient would look as a hero section background. Add your compelling copy here to

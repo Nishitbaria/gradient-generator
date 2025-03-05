@@ -285,7 +285,8 @@ const tailwindColorToHex = (colorName: string) => {
 
 // Convert Tailwind direction to CSS direction
 const tailwindDirectionToCSS = (direction: string) => {
-  const directionMap = {
+  const directionMap: Record<string, string> = {
+    // Old Tailwind v3 syntax
     "bg-gradient-to-r": "to right",
     "bg-gradient-to-l": "to left",
     "bg-gradient-to-t": "to top",
@@ -294,6 +295,15 @@ const tailwindDirectionToCSS = (direction: string) => {
     "bg-gradient-to-tl": "to top left",
     "bg-gradient-to-br": "to bottom right",
     "bg-gradient-to-bl": "to bottom left",
+    // New Tailwind v4 syntax
+    "bg-linear-to-r": "to right",
+    "bg-linear-to-l": "to left",
+    "bg-linear-to-t": "to top",
+    "bg-linear-to-b": "to bottom",
+    "bg-linear-to-tr": "to top right",
+    "bg-linear-to-tl": "to top left",
+    "bg-linear-to-br": "to bottom right",
+    "bg-linear-to-bl": "to bottom left",
   }
 
   return directionMap[direction] || "to right"
@@ -303,18 +313,25 @@ const tailwindDirectionToCSS = (direction: string) => {
 const parseTailwindGradient = (code: string) => {
   const parts = code.split(" ")
 
-  let direction = "bg-gradient-to-r"
+  let direction = "bg-linear-to-r"
   let fromColor = ""
   let viaColor = ""
   let toColor = ""
 
   parts.forEach((part) => {
-    if (part.startsWith("bg-gradient-to-")) {
+    // Handle both old and new gradient syntax for compatibility
+    if (part.startsWith("bg-gradient-to-") || part.startsWith("bg-linear-to-")) {
       direction = part
+    } else if (part.startsWith("gradient-from-")) {
+      fromColor = part.replace("gradient-from-", "")
     } else if (part.startsWith("from-")) {
       fromColor = part.replace("from-", "")
+    } else if (part.startsWith("gradient-via-")) {
+      viaColor = part.replace("gradient-via-", "")
     } else if (part.startsWith("via-")) {
       viaColor = part.replace("via-", "")
+    } else if (part.startsWith("gradient-to-")) {
+      toColor = part.replace("gradient-to-", "")
     } else if (part.startsWith("to-")) {
       toColor = part.replace("to-", "")
     }
@@ -429,7 +446,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
             <code>{code}</code>
           </pre>
           <motion.div
-            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-sm rounded-md"
+            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-xs rounded-md"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -450,7 +467,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
             <code>{tailwindToCSS(code)}</code>
           </pre>
           <motion.div
-            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-sm rounded-md"
+            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-xs rounded-md"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -471,7 +488,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
             <code>{tailwindToSCSS(code)}</code>
           </pre>
           <motion.div
-            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-sm rounded-md"
+            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-xs rounded-md"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -492,7 +509,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
             <code>{tailwindToCSSinJS(code)}</code>
           </pre>
           <motion.div
-            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-sm rounded-md"
+            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-xs rounded-md"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -513,7 +530,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
             <code>{tailwindToCSSVars(code)}</code>
           </pre>
           <motion.div
-            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-sm rounded-md"
+            className="absolute top-[52px] right-2 z-10 bg-black/50 backdrop-blur-xs rounded-md"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

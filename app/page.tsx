@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br from-gray-950 to-black flex flex-col items-center justify-center p-4 py-32 pb-40">
+      <main className="min-h-screen bg-linear-to-br gradient-from-gray-950 gradient-to-black flex flex-col items-center justify-center p-4 py-32 pb-40">
         <Suspense
           fallback={
             <div className="w-full max-w-4xl mx-auto animate-pulse">

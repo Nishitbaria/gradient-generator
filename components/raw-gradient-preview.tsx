@@ -12,8 +12,7 @@ export function RawGradientPreview() {
   const [copied, setCopied] = useState(false)
   const [showCode, setShowCode] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
-
-  const { gradientClass } = useGradientStore()
+  const { gradientClass, cssGradient } = useGradientStore()
 
   // Copy gradient class to clipboard
   const copyToClipboard = () => {
@@ -32,7 +31,8 @@ export function RawGradientPreview() {
       onMouseLeave={() => setIsHovering(false)}
     >
       <motion.div
-        className={cn("w-full h-full transition-all duration-500 relative z-0", gradientClass())}
+        className="w-full h-full transition-all duration-500 relative z-0"
+        style={{ background: cssGradient() }}
         layoutId="gradient-preview"
         initial={{ scale: 1 }}
         animate={{
