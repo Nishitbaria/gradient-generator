@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 0 0% 9%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 96.1%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 0 0% 96.1%;
+  --muted-foreground: 0 0% 45.1%;
+  --accent: 0 0% 96.1%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 89.8%;
+  --input: 0 0% 89.8%;
+  --ring: 0 0% 3.9%;
+  --radius: 0.5rem;
+
+  /* App-specific light mode variables */
+  --app-background: 210 40% 98%;
+  --app-foreground: 222 47% 11%;
+  --app-card: 0 0% 100%;
+  --app-card-foreground: 222 47% 11%;
+  --app-card-border: 214 32% 91%;
+  --app-muted: 210 40% 96.1%;
+  --app-muted-foreground: 215.4 16.3% 46.9%;
+  --app-accent: 210 40% 96.1%;
+  --app-accent-foreground: 222.2 47.4% 11.2%;
+  --app-panel-background: 0 0% 100%;
+  --app-panel-foreground: 222 47% 11%;
+  --app-panel-border: 214 32% 91%;
+  --app-highlight: 214 95% 93%;
+}
+
+.dark {
+  --background: 0 0% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 0 0% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 0 0% 9%;
+  --secondary: 0 0% 14.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 0 0% 14.9%;
+  --muted-foreground: 0 0% 63.9%;
+  --accent: 0 0% 14.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 0 0% 14.9%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+
+  /* App-specific dark mode variables */
+  --app-background: 222 47% 11%;
+  --app-foreground: 210 40% 98%;
+  --app-card: 222 47% 11%;
+  --app-card-foreground: 210 40% 98%;
+  --app-card-border: 217 33% 17%;
+  --app-muted: 217 33% 17%;
+  --app-muted-foreground: 215 20% 65%;
+  --app-accent: 217 33% 17%;
+  --app-accent-foreground: 210 40% 98%;
+  --app-panel-background: 224 71% 4%;
+  --app-panel-foreground: 210 40% 98%;
+  --app-panel-border: 217 33% 17%;
+  --app-highlight: 217 33% 18%;
+}
+
+body {
+  @apply bg-background text-foreground;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted/30 dark:bg-muted/10;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 dark:bg-muted-foreground/30;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30 dark:bg-muted-foreground/40;
+}
+
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-aurora {
+  background-size: 200% auto;
+  animation: aurora 8s ease infinite;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar styles for code blocks */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 dark:bg-muted-foreground/30;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/30 dark:bg-muted-foreground/40;
+}
+
