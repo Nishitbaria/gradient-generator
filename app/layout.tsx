@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Tailwind Gradient Generator | GradientLab",
   description: "Create beautiful Tailwind CSS gradients with ease",
   manifest: "/manifest.json", // Add this line for PWA support
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -47,7 +47,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'
