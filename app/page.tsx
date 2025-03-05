@@ -15,12 +15,9 @@ const GradientGenerator = dynamic(() => import("@/components/gradient-generator"
   ),
 })
 
-const OfflineStatus = dynamic(() => import("@/components/offline-status").then((mod) => mod.OfflineStatus), {
-  ssr: false,
-})
-
-const InstallPrompt = dynamic(() => import("@/components/install-prompt").then((mod) => mod.InstallPrompt), {
-  ssr: false,
+// Import the client components wrapper
+const ClientComponents = dynamic(() => import("@/components/client-components"), {
+  ssr: true,
 })
 
 export default function Home() {
@@ -41,8 +38,7 @@ export default function Home() {
         <CuratedGradients />
       </main>
       <Footer />
-      <OfflineStatus />
-      <InstallPrompt />
+      <ClientComponents />
     </>
   )
 }
