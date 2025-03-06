@@ -83,27 +83,6 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
 
   // Generate CSS gradient string for a history item
   const getCssGradientForHistoryItem = (item: GradientHistoryItem): string => {
-    // Get the CSS direction
-    const directionMap: Record<string, string> = {
-      "bg-gradient-to-r": "to right",
-      "bg-gradient-to-l": "to left",
-      "bg-gradient-to-t": "to top",
-      "bg-gradient-to-b": "to bottom",
-      "bg-gradient-to-tr": "to top right",
-      "bg-gradient-to-tl": "to top left",
-      "bg-gradient-to-br": "to bottom right",
-      "bg-gradient-to-bl": "to bottom left",
-      "bg-linear-to-r": "to right",
-      "bg-linear-to-l": "to left",
-      "bg-linear-to-t": "to top",
-      "bg-linear-to-b": "to bottom",
-      "bg-linear-to-tr": "to top right",
-      "bg-linear-to-tl": "to top left",
-      "bg-linear-to-br": "to bottom right",
-      "bg-linear-to-bl": "to bottom left",
-    }
-    const cssDirection = directionMap[item.direction] || "to right"
-
     // Get color values
     const getColorValue = (colorObj: { color: string; intensity: string }): string => {
       if (colorObj.color === "white") return "#ffffff"
@@ -133,8 +112,62 @@ export function GradientHistory({ onClose }: GradientHistoryProps) {
       }
     }
 
-    // Build the gradient string
-    let gradientString = `linear-gradient(${cssDirection}`
+    // Build the gradient string based on type
+    let gradientString = ""
+
+    // Handle different gradient types
+    const gradientType = item.gradientType || "linear" // Default to linear for backward compatibility
+
+    if (gradientType === "linear") {
+      if (item.direction === "custom-angle") {
+        // Use custom angle
+        const angle = item.gradientAngle || 0
+        gradientString = `linear-gradient(${angle}deg`
+      } else {
+        // Get the CSS direction from the Tailwind direction class
+        const directionMap: Record<string, string> = {
+          "bg-gradient-to-r": "to right",
+          "bg-gradient-to-l": "to left",
+          "bg-gradient-to-t": "to top",
+          "bg-gradient-to-b": "to bottom",
+          "bg-gradient-to-tr": "to top right",
+          "bg-gradient-to-tl": "to top left",
+          "bg-gradient-to-br": "to bottom right",
+          "bg-gradient-to-bl": "to bottom left",
+          "bg-linear-to-r": "to right",
+          "bg-linear-to-l": "to left",
+          "bg-linear-to-t": "to top",
+          "bg-linear-to-b": "to bottom",
+          "bg-linear-to-tr": "to top right",
+          "bg-linear-to-tl": "to top left",
+          "bg-linear-to-br": "to bottom right",
+          "bg-linear-to-bl": "to bottom left",
+        }
+        const cssDirection = directionMap[item.direction] || "to right"
+        gradientString = `linear-gradient(${cssDirection}`
+      }
+    } else if (gradientType === "radial") {
+      // Handle radial gradient positions
+      let position = "center"
+      if (item.direction === "radial-at-t") position = "top"
+      else if (item.direction === "radial-at-b") position = "bottom"
+      else if (item.direction === "radial-at-l") position = "left"
+      else if (item.direction === "radial-at-r") position = "right"
+      else if (item.direction === "radial-at-c") position = "center"
+
+      gradientString = `radial-gradient(circle at ${position}`
+    } else if (gradientType === "conic") {
+      // Handle conic gradient positions
+      let position = "center"
+      if (item.direction === "conic-at-t") position = "top center"
+      else if (item.direction === "conic-at-b") position = "bottom center"
+      else if (item.direction === "conic-at-c") position = "center"
+
+      const angle = item.gradientAngle || 0
+      gradientString = `conic-gradient(from ${angle}deg at ${position}`
+    }
+
+    // Add the colors
     gradientString += `, ${getColorValue(item.fromColor)}`
     if (item.useVia && item.viaColor) {
       gradientString += `, ${getColorValue(item.viaColor)}`
