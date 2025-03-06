@@ -10,6 +10,8 @@ import { ColorSelector } from "@/components/color-selector"
 import { DirectionSelector } from "@/components/direction-selector"
 import { DIRECTIONS, COLORS, INTENSITIES, useGradientStore } from "@/lib/store"
 import { useIsMobile } from "@/lib/hooks/use-device-detection"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export function GradientControls() {
   const isMobile = useIsMobile()
@@ -39,15 +41,24 @@ export function GradientControls() {
           <h2 className="text-lg md:text-xl font-semibold text-app-foreground dark:text-white">Customize Gradient</h2>
 
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-app-card dark:bg-[#0F1629] border-app-card-border dark:border-white/5 text-app-foreground dark:text-white hover:bg-app-muted dark:hover:bg-[#1A2237]"
-              onClick={generateRandomGradient}
-            >
-              <Shuffle className="h-4 w-4 mr-2" />
-              Shuffle
-            </Button>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="bg-app-card dark:bg-[#0F1629] border-app-card-border dark:border-white/5 text-app-foreground dark:text-white hover:bg-app-muted dark:hover:bg-[#1A2237]"
+                    onClick={generateRandomGradient}
+                  >
+                    <Shuffle className="h-4 w-4 mr-2" />
+                    Generate Gradient
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Generate a new curated gradient combination while preserving the gradient type</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
             <div className="flex items-center gap-2">
               <Switch checked={useVia} onCheckedChange={setUseVia} className="data-[state=checked]:bg-primary" />

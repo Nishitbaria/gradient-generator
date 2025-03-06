@@ -336,36 +336,96 @@ export const useGradientStore = create<GradientStore>()((set, get) => ({
   setGradientAngle: (gradientAngle) => set({ gradientAngle }),
 
   generateRandomGradient: () => {
-    const randomColor = () => ({
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      intensity: INTENSITIES[Math.floor(Math.random() * INTENSITIES.length)],
-    })
+    const { gradientType } = get()
 
-    // Random gradient type
-    const gradientTypes: Array<"linear" | "radial" | "conic"> = ["linear", "radial", "conic"]
-    const randomGradientType = gradientTypes[Math.floor(Math.random() * gradientTypes.length)]
+    // Curated color combinations that work well together
+    const curatedCombinations = [
+      // Two-color combinations
+      { from: "blue-500", to: "purple-500" },
+      { from: "green-400", to: "blue-500" },
+      { from: "yellow-300", to: "red-500" },
+      { from: "pink-500", to: "rose-500" },
+      { from: "indigo-500", to: "cyan-400" },
+      { from: "red-400", to: "red-700" },
+      { from: "blue-300", to: "blue-600" },
+      { from: "green-200", to: "green-700" },
+      { from: "indigo-400", to: "purple-500" },
+      { from: "amber-200", to: "orange-600" },
+      { from: "teal-300", to: "cyan-700" },
+      { from: "slate-800", to: "slate-500" },
+      { from: "zinc-800", to: "zinc-400" },
+      { from: "stone-800", to: "amber-400" },
+      { from: "sky-400", to: "indigo-900" },
+      { from: "violet-500", to: "fuchsia-500" },
+      { from: "lime-500", to: "emerald-500" },
+      { from: "rose-500", to: "indigo-700" },
+      { from: "amber-300", to: "pink-500" },
+      { from: "cyan-500", to: "blue-900" },
+      { from: "fuchsia-600", to: "pink-400" },
+
+      // Three-color combinations (with via)
+      { from: "slate-900", via: "purple-900", to: "orange-500" },
+      { from: "purple-600", via: "pink-500", to: "orange-400" },
+      { from: "blue-700", via: "blue-400", to: "emerald-400" },
+      { from: "red-500", via: "purple-500", to: "blue-500" },
+      { from: "green-500", via: "cyan-400", to: "blue-500" },
+      { from: "purple-500", via: "pink-500", to: "red-500" },
+      { from: "yellow-400", via: "orange-500", to: "red-600" },
+      { from: "blue-600", via: "indigo-600", to: "purple-600" },
+      { from: "emerald-500", via: "teal-500", to: "cyan-500" },
+    ]
+
+    // Select a random combination
+    const randomCombination = curatedCombinations[Math.floor(Math.random() * curatedCombinations.length)]
+
+    // Parse the color and intensity
+    const parseColorIntensity = (colorStr: string) => {
+      const [color, intensity] = colorStr.split('-')
+      return { color, intensity }
+    }
+
+    const fromColorObj = parseColorIntensity(randomCombination.from)
+    const toColorObj = parseColorIntensity(randomCombination.to)
+
+    // Handle via color if present
+    let useVia = false
+    let viaColorObj = { color: "purple", intensity: "500" }
+
+    if (randomCombination.via) {
+      useVia = true
+      viaColorObj = parseColorIntensity(randomCombination.via)
+    }
 
     // Random direction based on gradient type
-    let randomDirection = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)].value
+    let randomDirection
+    let randomAngle = Math.floor(Math.random() * 360)
 
-    if (randomGradientType === "radial") {
+    if (gradientType === "linear") {
+      // For linear gradients, either use a predefined direction or custom angle
+      if (Math.random() > 0.3) {
+        // Use a predefined direction (70% chance)
+        randomDirection = DIRECTIONS[Math.floor(Math.random() * (DIRECTIONS.length - 1))].value // Exclude custom-angle
+      } else {
+        // Use custom angle (30% chance)
+        randomDirection = "custom-angle"
+      }
+    } else if (gradientType === "radial") {
       const radialPositions = ["radial-at-t", "radial-at-b", "radial-at-l", "radial-at-r", "radial-at-c"]
       randomDirection = radialPositions[Math.floor(Math.random() * radialPositions.length)]
-    } else if (randomGradientType === "conic") {
+    } else if (gradientType === "conic") {
       const conicPositions = ["conic-at-t", "conic-at-b", "conic-at-c"]
       randomDirection = conicPositions[Math.floor(Math.random() * conicPositions.length)]
     }
 
-    // Random angle
-    const randomAngle = Math.floor(Math.random() * 360)
-
     set({
-      fromColor: randomColor(),
-      viaColor: randomColor(),
-      toColor: randomColor(),
+      fromColor: fromColorObj,
+      viaColor: viaColorObj,
+      toColor: toColorObj,
+      useVia,
       direction: randomDirection,
-      gradientType: randomGradientType,
       gradientAngle: randomAngle,
+      // Keep existing gradient type
+      gradientType,
     })
   },
 
