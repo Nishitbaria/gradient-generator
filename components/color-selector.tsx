@@ -7,16 +7,22 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useIsMobile } from "@/lib/hooks/use-device-detection"
 
 interface ColorSelectorProps {
-  label: string
-  value: string
-  color: string
-  intensity: string
-  onChange: (color: string, intensity: string) => void
+  selectedColor: string
+  selectedIntensity: string
+  onColorChange: (color: string, intensity: string) => void
+  onIntensityChange: (intensity: string) => void
   colors: string[]
   intensities: string[]
 }
 
-export function ColorSelector({ label, value, color, intensity, onChange, colors, intensities }: ColorSelectorProps) {
+export function ColorSelector({
+  selectedColor,
+  selectedIntensity,
+  onColorChange,
+  onIntensityChange,
+  colors,
+  intensities
+}: ColorSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -121,15 +127,15 @@ export function ColorSelector({ label, value, color, intensity, onChange, colors
     const options = []
 
     // Add special colors
-    options.push({ label: `gradient-${label.toLowerCase()}-white`, value: "white", intensity: "" })
-    options.push({ label: `gradient-${label.toLowerCase()}-transparent`, value: "transparent", intensity: "" })
-    options.push({ label: `gradient-${label.toLowerCase()}-black`, value: "black", intensity: "" })
+    options.push({ label: `gradient-white`, value: "white", intensity: "" })
+    options.push({ label: `gradient-transparent`, value: "transparent", intensity: "" })
+    options.push({ label: `gradient-black`, value: "black", intensity: "" })
 
     // Add all color-intensity combinations
     for (const c of colors) {
       for (const i of intensities) {
         options.push({
-          label: `gradient-${label.toLowerCase()}-${c}-${i}`,
+          label: `gradient-${c}-${i}`,
           value: c,
           intensity: i,
         })
@@ -148,7 +154,7 @@ export function ColorSelector({ label, value, color, intensity, onChange, colors
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <div className="text-sm font-medium text-white/80 mb-2">{label}</div>
+      <div className="text-sm font-medium text-white/80 mb-2">Color</div>
       <motion.button
         className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-app-card-border dark:border-white/5 bg-app-card dark:bg-[#0F1629] hover:bg-app-muted dark:hover:bg-[#1A2237] transition-colors"
         onClick={() => setIsOpen(!isOpen)}
@@ -159,14 +165,14 @@ export function ColorSelector({ label, value, color, intensity, onChange, colors
           <div
             className="w-4 md:w-5 h-4 md:h-5 rounded-full"
             style={{
-              backgroundColor: color === "transparent"
+              backgroundColor: selectedColor === "transparent"
                 ? "transparent"
-                : getColorValue(color, intensity),
-              border: color === "transparent" ? "1px solid rgba(156, 163, 175, 0.5)" : "none"
+                : getColorValue(selectedColor, selectedIntensity),
+              border: selectedColor === "transparent" ? "1px solid rgba(156, 163, 175, 0.5)" : "none"
             }}
           />
           <span className="font-medium text-sm md:text-base">
-            {value.replace(/^from-/, "gradient-from-").replace(/^via-/, "gradient-via-").replace(/^to-/, "gradient-to-")}
+            {`gradient-${selectedColor}${selectedIntensity ? `-${selectedIntensity}` : ''}`}
           </span>
         </div>
         <ChevronDown className={cn("h-4 w-4 transition-transform duration-200", isOpen ? "rotate-180" : "rotate-0")} />
@@ -199,11 +205,11 @@ export function ColorSelector({ label, value, color, intensity, onChange, colors
             <div className="overflow-y-auto max-h-[50vh] md:max-h-[60vh] py-1 overscroll-contain">
               {colorOptions.map((option, index) => {
                 const isSelected =
-                  option.value === color &&
-                  (option.intensity === intensity ||
-                    (option.value === "white" && color === "white") ||
-                    (option.value === "black" && color === "black") ||
-                    (option.value === "transparent" && color === "transparent"))
+                  option.value === selectedColor &&
+                  (option.intensity === selectedIntensity ||
+                    (option.value === "white" && selectedColor === "white") ||
+                    (option.value === "black" && selectedColor === "black") ||
+                    (option.value === "transparent" && selectedColor === "transparent"))
 
                 return (
                   <motion.button
@@ -213,7 +219,7 @@ export function ColorSelector({ label, value, color, intensity, onChange, colors
                       isSelected && "bg-app-muted dark:bg-[#1A2237]",
                     )}
                     onClick={() => {
-                      onChange(option.value, option.intensity)
+                      onColorChange(option.value, option.intensity)
                       setIsOpen(false)
                       setSearchQuery("")
                     }}

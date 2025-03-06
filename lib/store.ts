@@ -42,23 +42,12 @@ export const DIRECTIONS = [
   { value: "bg-linear-to-tl", label: "To Top Left", icon: "↖" },
   { value: "bg-linear-to-br", label: "To Bottom Right", icon: "↘" },
   { value: "bg-linear-to-bl", label: "To Bottom Left", icon: "↙" },
+  { value: "custom-angle", label: "Custom Angle", icon: "°" },
 ]
 
 export type ColorOption = {
   color: string
   intensity: string
-}
-
-export type GradientHistoryItem = {
-  id: string
-  direction: string
-  fromColor: ColorOption
-  viaColor?: ColorOption
-  toColor: ColorOption
-  useVia: boolean
-  timestamp: number
-  gradientType: "linear" | "radial" | "conic"
-  gradientAngle: number
 }
 
 // Define GradientStore type if not already defined
@@ -71,7 +60,6 @@ type GradientStore = {
   useVia: boolean;
   previewMode: "raw" | "component";
   componentType: "card" | "button" | "navbar" | "hero";
-  history: GradientHistoryItem[];
   gradientType: "linear" | "radial" | "conic";
   gradientAngle: number;
 
@@ -86,14 +74,8 @@ type GradientStore = {
   setGradientType: (type: "linear" | "radial" | "conic") => void;
   setGradientAngle: (angle: number) => void;
   generateRandomGradient: () => void;
-  addToHistory: () => Promise<void>;
-  removeFromHistory: (id: string) => Promise<void>;
-  loadGradientsFromStorage: () => Promise<void>;
-  clearHistory: () => Promise<void>;
-  applyFromHistory: (item: GradientHistoryItem) => void;
   gradientClass: () => string;
   cssGradient: () => string;
-  findClosestTailwindColor: (hex: string) => { color: string; intensity: string };
 }
 
 // Helper function to generate a unique ID
@@ -330,269 +312,188 @@ type GradientPersist = {
 
 // Use a simpler approach with type assertion for the entire store creation
 // This is a workaround for Zustand type compatibility issues
-export const useGradientStore = create<GradientStore>()((persist as any)(
-  (set, get) => ({
-    // Default values - Updated for Tailwind v4
-    direction: "bg-linear-to-r",
-    fromColor: { color: "blue", intensity: "500" },
-    viaColor: { color: "purple", intensity: "500" },
-    toColor: { color: "pink", intensity: "500" },
-    useVia: true,
-    previewMode: "raw",
-    componentType: "card",
-    history: [],
-    gradientType: "linear",
-    gradientAngle: 0,
+export const useGradientStore = create<GradientStore>()((set, get) => ({
+  // Initial state
+  direction: "bg-linear-to-r",
+  fromColor: { color: "blue", intensity: "500" },
+  viaColor: { color: "purple", intensity: "500" },
+  toColor: { color: "pink", intensity: "500" },
+  useVia: false,
+  previewMode: "raw",
+  componentType: "card",
+  gradientType: "linear",
+  gradientAngle: 45,
 
-    // Actions
-    setDirection: (direction: string) => set({ direction }),
-    setFromColor: (color: string, intensity: string) => {
-      set({ fromColor: { color, intensity } })
-      setTimeout(() => get().addToHistory(), 100)
-    },
-    setViaColor: (color: string, intensity: string) => {
-      set({ viaColor: { color, intensity } })
-      setTimeout(() => get().addToHistory(), 100)
-    },
-    setToColor: (color: string, intensity: string) => {
-      set({ toColor: { color, intensity } })
-      setTimeout(() => get().addToHistory(), 100)
-    },
-    setUseVia: (useVia: boolean) => {
-      set({ useVia })
-      setTimeout(() => get().addToHistory(), 100)
-    },
-    setPreviewMode: (previewMode: "raw" | "component") => set({ previewMode }),
-    setComponentType: (componentType: "card" | "button" | "navbar" | "hero") => set({ componentType }),
-    setGradientType: (type: "linear" | "radial" | "conic") => {
-      set({ gradientType: type })
-      setTimeout(() => get().addToHistory(), 100)
-    },
-    setGradientAngle: (angle: number) => {
-      set({ gradientAngle: angle })
-      setTimeout(() => get().addToHistory(), 100)
-    },
+  // Actions
+  setDirection: (direction) => set({ direction }),
+  setFromColor: (color, intensity) => set({ fromColor: { color, intensity } }),
+  setViaColor: (color, intensity) => set({ viaColor: { color, intensity } }),
+  setToColor: (color, intensity) => set({ toColor: { color, intensity } }),
+  setUseVia: (useVia) => set({ useVia }),
+  setPreviewMode: (previewMode) => set({ previewMode }),
+  setComponentType: (componentType) => set({ componentType }),
+  setGradientType: (gradientType) => set({ gradientType }),
+  setGradientAngle: (gradientAngle) => set({ gradientAngle }),
 
-    // Gradient operations
-    generateRandomGradient: () => {
-      const randomColor = () => ({
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        intensity: INTENSITIES[Math.floor(Math.random() * INTENSITIES.length)],
-      })
+  generateRandomGradient: () => {
+    const randomColor = () => ({
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      intensity: INTENSITIES[Math.floor(Math.random() * INTENSITIES.length)],
+    })
 
-      // Random gradient type
-      const gradientTypes: Array<"linear" | "radial" | "conic"> = ["linear", "radial", "conic"]
-      const randomGradientType = gradientTypes[Math.floor(Math.random() * gradientTypes.length)]
+    // Random gradient type
+    const gradientTypes: Array<"linear" | "radial" | "conic"> = ["linear", "radial", "conic"]
+    const randomGradientType = gradientTypes[Math.floor(Math.random() * gradientTypes.length)]
 
-      // Random direction based on gradient type
-      let randomDirection = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)].value
+    // Random direction based on gradient type
+    let randomDirection = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)].value
 
-      if (randomGradientType === "radial") {
-        const radialPositions = ["radial-at-t", "radial-at-b", "radial-at-l", "radial-at-r", "radial-at-c"]
-        randomDirection = radialPositions[Math.floor(Math.random() * radialPositions.length)]
-      } else if (randomGradientType === "conic") {
-        const conicPositions = ["conic-at-t", "conic-at-b", "conic-at-c"]
-        randomDirection = conicPositions[Math.floor(Math.random() * conicPositions.length)]
-      }
+    if (randomGradientType === "radial") {
+      const radialPositions = ["radial-at-t", "radial-at-b", "radial-at-l", "radial-at-r", "radial-at-c"]
+      randomDirection = radialPositions[Math.floor(Math.random() * radialPositions.length)]
+    } else if (randomGradientType === "conic") {
+      const conicPositions = ["conic-at-t", "conic-at-b", "conic-at-c"]
+      randomDirection = conicPositions[Math.floor(Math.random() * conicPositions.length)]
+    }
 
-      // Random angle
-      const randomAngle = Math.floor(Math.random() * 360)
+    // Random angle
+    const randomAngle = Math.floor(Math.random() * 360)
 
-      set({
-        fromColor: randomColor(),
-        viaColor: randomColor(),
-        toColor: randomColor(),
-        direction: randomDirection,
-        gradientType: randomGradientType,
-        gradientAngle: randomAngle,
-      })
-
-      setTimeout(() => get().addToHistory(), 100)
-    },
-
-    // Override addToHistory to use offline storage
-    addToHistory: async () => {
-      const { direction, fromColor, viaColor, toColor, useVia, history, gradientType, gradientAngle } = get()
-
-      const currentGradient = {
-        id: generateId(),
-        direction,
-        fromColor,
-        viaColor,
-        toColor,
-        useVia,
-        timestamp: Date.now(),
-        gradientType,
-        gradientAngle,
-      }
-
-      // Check if this exact gradient is already in history
-      const isDuplicate = history.some(
-        (item) =>
-          item.direction === direction &&
-          item.fromColor.color === fromColor.color &&
-          item.fromColor.intensity === fromColor.intensity &&
-          item.toColor.color === toColor.color &&
-          item.toColor.intensity === toColor.intensity &&
-          item.useVia === useVia &&
-          item.gradientType === gradientType &&
-          item.gradientAngle === gradientAngle &&
-          (!useVia || (item.viaColor?.color === viaColor.color && item.viaColor?.intensity === viaColor.intensity)),
-      )
-
-      if (!isDuplicate) {
-        // Save to local storage
-        await saveGradientLocally(currentGradient)
-
-        // Add to state
-        set({ history: [currentGradient, ...history].slice(0, 20) })
-      }
-    },
-
-    // Override removeFromHistory to use offline storage
-    removeFromHistory: async (id: string) => {
-      const { history } = get()
-
-      // Delete from local storage
-      await deleteLocalGradient(id)
-
-      // Update state
-      set({ history: history.filter((item) => item.id !== id) })
-    },
-
-    // Load gradients from storage
-    loadGradientsFromStorage: async () => {
-      try {
-        const gradients = await getLocalGradients()
-
-        // Migrate old gradient directions to new Tailwind v4 format
-        // and add default values for gradientType and gradientAngle if they don't exist
-        const migratedGradients = gradients.map(item => ({
-          ...item,
-          direction: migrateGradientDirection(item.direction),
-          gradientType: item.gradientType || "linear",
-          gradientAngle: item.gradientAngle !== undefined ? item.gradientAngle : 45
-        }))
-
-        set({ history: migratedGradients })
-      } catch (error) {
-        console.error("Error loading gradients from storage:", error)
-      }
-    },
-
-    // Update the clearHistory function in the store
-    clearHistory: async () => {
-      // First clear the history in the store
-      set({ history: [] })
-
-      try {
-        // Then clear the gradients from IndexedDB
-        await clearLocalGradients()
-
-        // Also clear localStorage for the Zustand persist state
-        if (typeof window !== 'undefined') {
-          const zustandKey = 'gradient-store'
-          localStorage.removeItem(zustandKey)
-        }
-
-        console.log("History cleared successfully from both store and IndexedDB")
-      } catch (error) {
-        console.error("Error clearing history:", error)
-      }
-    },
-
-    // Apply gradient from history
-    applyFromHistory: (item: GradientHistoryItem) => {
-      // Migrate old gradient direction to new Tailwind v4 format if needed
-      const direction = migrateGradientDirection(item.direction)
-
-      set({
-        direction,
-        fromColor: item.fromColor,
-        viaColor: item.viaColor || { color: "purple", intensity: "500" },
-        toColor: item.toColor,
-        useVia: item.useVia,
-        gradientType: item.gradientType,
-        gradientAngle: item.gradientAngle,
-      })
-    },
-
-    // Computed values
-    gradientClass: () => {
-      const { direction } = get()
-      // In Tailwind v4, we'll use the direction class only and apply the colors via inline style
-      return direction
-    },
-
-    // Update the cssGradient computed value in the store
-    cssGradient: () => {
-      const { direction, fromColor, viaColor, toColor, useVia, gradientType, gradientAngle } = get()
-
-      // Get the color values
-      const fromColorValue = getColorValue(fromColor)
-      const viaColorValue = useVia ? getColorValue(viaColor) : null
-      const toColorValue = getColorValue(toColor)
-
-      // Build the gradient string based on type
-      let gradientString = ""
-
-      if (gradientType === "linear") {
-        if (direction === "custom-angle") {
-          // Use custom angle
-          gradientString = `linear-gradient(${gradientAngle}deg`
-        } else {
-          // Get the CSS direction from the Tailwind direction class
-          const cssDirection = getCssDirection(direction)
-          gradientString = `linear-gradient(${cssDirection}`
-        }
-      } else if (gradientType === "radial") {
-        // Handle radial gradient positions
-        let position = "center"
-        if (direction === "radial-at-t") position = "top"
-        else if (direction === "radial-at-b") position = "bottom"
-        else if (direction === "radial-at-l") position = "left"
-        else if (direction === "radial-at-r") position = "right"
-        else if (direction === "radial-at-c") position = "center"
-
-        gradientString = `radial-gradient(circle at ${position}`
-      } else if (gradientType === "conic") {
-        // Handle conic gradient positions
-        let position = "center"
-        if (direction === "conic-at-t") position = "top center"
-        else if (direction === "conic-at-b") position = "bottom center"
-        else if (direction === "conic-at-c") position = "center"
-
-        gradientString = `conic-gradient(from ${gradientAngle}deg at ${position}`
-      }
-
-      // Add the colors
-      gradientString += `, ${fromColorValue}`
-      if (viaColorValue) {
-        gradientString += `, ${viaColorValue}`
-      }
-      gradientString += `, ${toColorValue})`
-
-      return gradientString
-    },
-    findClosestTailwindColor: (hex: string) => findClosestTailwindColor(hex),
-  }),
-  {
-    name: "gradient-storage",
-    partialize: (state) => ({ history: state.history }),
-    // Add an onRehydrateStorage callback to initialize offline storage
-    onRehydrateStorage: () => (state) => {
-      // Initialize offline storage
-      if (typeof window !== "undefined") {
-        initOfflineStorage()
-
-        // Load gradients from storage if needed
-        if (state && (!state.history || state.history.length === 0)) {
-          setTimeout(() => {
-            useGradientStore.getState().loadGradientsFromStorage()
-          }, 0)
-        }
-      }
-    },
+    set({
+      fromColor: randomColor(),
+      viaColor: randomColor(),
+      toColor: randomColor(),
+      direction: randomDirection,
+      gradientType: randomGradientType,
+      gradientAngle: randomAngle,
+    })
   },
-))
+
+  gradientClass: () => {
+    const { direction, fromColor, viaColor, toColor, useVia, gradientType } = get()
+    let className = ""
+
+    if (gradientType === "linear") {
+      className = direction
+    } else if (gradientType === "radial") {
+      className = `bg-radial ${direction}`
+    } else if (gradientType === "conic") {
+      className = `bg-conic ${direction}`
+    }
+
+    className += ` gradient-from-${fromColor.color}-${fromColor.intensity}`
+    if (useVia) {
+      className += ` gradient-via-${viaColor.color}-${viaColor.intensity}`
+    }
+    className += ` gradient-to-${toColor.color}-${toColor.intensity}`
+
+    return className
+  },
+
+  cssGradient: () => {
+    const { direction, fromColor, viaColor, toColor, useVia, gradientType, gradientAngle } = get()
+    let gradient = ""
+
+    // Helper function to get CSS color value
+    const getColorValue = (color: ColorOption) => {
+      if (color.color === "white") return "white"
+      if (color.color === "black") return "black"
+      if (color.color === "transparent") return "transparent"
+
+      // Use the color map to get the actual hex value
+      const colorMap: Record<string, Record<string, string>> = {
+        slate: {
+          "50": "#f8fafc", "100": "#f1f5f9", "200": "#e2e8f0", "300": "#cbd5e1",
+          "400": "#94a3b8", "500": "#64748b", "600": "#475569", "700": "#334155",
+          "800": "#1e293b", "900": "#0f172a"
+        },
+        gray: {
+          "50": "#f9fafb", "100": "#f3f4f6", "200": "#e5e7eb", "300": "#d1d5db",
+          "400": "#9ca3af", "500": "#6b7280", "600": "#4b5563", "700": "#374151",
+          "800": "#1f2937", "900": "#111827"
+        },
+        zinc: {
+          "50": "#fafafa", "100": "#f4f4f5", "200": "#e4e4e7", "300": "#d4d4d8",
+          "400": "#a1a1aa", "500": "#71717a", "600": "#52525b", "700": "#3f3f46",
+          "800": "#27272a", "900": "#18181b"
+        },
+        red: {
+          "50": "#fef2f2", "100": "#fee2e2", "200": "#fecaca", "300": "#fca5a5",
+          "400": "#f87171", "500": "#ef4444", "600": "#dc2626", "700": "#b91c1c",
+          "800": "#991b1b", "900": "#7f1d1d"
+        },
+        blue: {
+          "50": "#eff6ff", "100": "#dbeafe", "200": "#bfdbfe", "300": "#93c5fd",
+          "400": "#60a5fa", "500": "#3b82f6", "600": "#2563eb", "700": "#1d4ed8",
+          "800": "#1e40af", "900": "#1e3a8a"
+        },
+        green: {
+          "50": "#f0fdf4", "100": "#dcfce7", "200": "#bbf7d0", "300": "#86efac",
+          "400": "#4ade80", "500": "#22c55e", "600": "#16a34a", "700": "#15803d",
+          "800": "#166534", "900": "#14532d"
+        },
+        teal: {
+          "50": "#f0fdfa", "100": "#ccfbf1", "200": "#99f6e4", "300": "#5eead4",
+          "400": "#2dd4bf", "500": "#14b8a6", "600": "#0d9488", "700": "#0f766e",
+          "800": "#115e59", "900": "#134e4a"
+        },
+        cyan: {
+          "50": "#ecfeff", "100": "#cffafe", "200": "#a5f3fc", "300": "#67e8f9",
+          "400": "#22d3ee", "500": "#06b6d4", "600": "#0891b2", "700": "#0e7490",
+          "800": "#155e75", "900": "#164e63"
+        },
+        purple: {
+          "50": "#faf5ff", "100": "#f3e8ff", "200": "#e9d5ff", "300": "#d8b4fe",
+          "400": "#c084fc", "500": "#a855f7", "600": "#9333ea", "700": "#7e22ce",
+          "800": "#6b21a8", "900": "#581c87"
+        },
+        pink: {
+          "50": "#fdf2f8", "100": "#fce7f3", "200": "#fbcfe8", "300": "#f9a8d4",
+          "400": "#f472b6", "500": "#ec4899", "600": "#db2777", "700": "#be185d",
+          "800": "#9d174d", "900": "#831843"
+        }
+      }
+
+      return colorMap[color.color]?.[color.intensity] || "#64748b" // Default to slate-500 if not found
+    }
+
+    if (gradientType === "linear") {
+      if (direction === "custom-angle") {
+        gradient = `linear-gradient(${gradientAngle}deg`
+      } else {
+        const directionMap: Record<string, string> = {
+          "bg-linear-to-t": "to top",
+          "bg-linear-to-tr": "to top right",
+          "bg-linear-to-r": "to right",
+          "bg-linear-to-br": "to bottom right",
+          "bg-linear-to-b": "to bottom",
+          "bg-linear-to-bl": "to bottom left",
+          "bg-linear-to-l": "to left",
+          "bg-linear-to-tl": "to top left",
+        }
+        gradient = `linear-gradient(${directionMap[direction] || "to right"}`
+      }
+    } else if (gradientType === "radial") {
+      let position = "center"
+      if (direction === "radial-at-t") position = "top"
+      else if (direction === "radial-at-b") position = "bottom"
+      else if (direction === "radial-at-l") position = "left"
+      else if (direction === "radial-at-r") position = "right"
+      gradient = `radial-gradient(circle at ${position}`
+    } else if (gradientType === "conic") {
+      let position = "center"
+      if (direction === "conic-at-t") position = "top"
+      else if (direction === "conic-at-b") position = "bottom"
+      gradient = `conic-gradient(from ${gradientAngle}deg at ${position}`
+    }
+
+    gradient += `, ${getColorValue(fromColor)}`
+    if (useVia) {
+      gradient += `, ${getColorValue(viaColor)}`
+    }
+    gradient += `, ${getColorValue(toColor)})`
+
+    return gradient
+  },
+}))
 

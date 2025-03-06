@@ -450,12 +450,15 @@ export function CuratedGradients() {
   return (
     <section className="w-full max-w-7xl mx-auto px-4 py-20">
       {/* Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-white mb-4 animate-sparkles">Curated Gradients</h2>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+      <div className="text-center mb-6 sm:mb-8 md:mb-12 px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 sm:mb-3 md:mb-4 animate-sparkles">
+          Curated Gradients
+        </h2>
+        <p className="text-sm sm:text-base text-gray-400 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto">
           Explore our collection of carefully crafted gradients, from subtle transitions to vibrant color combinations.
         </p>
       </div>
+
 
       {/* Tabs for All/Favorites */}
       <div className="flex justify-center mb-8">
@@ -621,11 +624,11 @@ export function CuratedGradients() {
                         : `linear-gradient(to bottom right, ${getTailwindColor(gradient.from)}, ${getTailwindColor(gradient.to)})`
                     }}
                   />
-                  <div className="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute bottom-4 right-4 flex gap-2 md:opacity-0 opacity-100 md:group-hover:opacity-100 transition-opacity">
                     <Button
                       size="sm"
                       variant="secondary"
-                      className="bg-white/20 backdrop-blur-md hover:bg-white/30 text-white hover:text-white"
+                      className="bg-white/20 backdrop-blur-md hover:bg-white/30 text-white hover:text-white h-9 w-9 md:h-8 md:w-8 p-0 md:opacity-0 opacity-100 md:group-hover:opacity-100"
                       onClick={() =>
                         copyGradient(
                           gradient.via
@@ -634,14 +637,16 @@ export function CuratedGradients() {
                           index,
                         )
                       }
+                      aria-label="Copy gradient code"
                     >
                       {copiedIndex === index ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     </Button>
                     <Button
                       size="sm"
                       variant="secondary"
-                      className="bg-white/20 backdrop-blur-md hover:bg-white/30 text-white"
+                      className="bg-white/20 backdrop-blur-md hover:bg-white/30 text-white h-9 w-9 md:h-8 md:w-8 p-0 md:opacity-0 opacity-100 md:group-hover:opacity-100"
                       onClick={() => toggleFavorite(gradient)}
+                      aria-label={isFavorite(gradient) ? "Remove from favorites" : "Add to favorites"}
                     >
                       {isFavorite(gradient) ? <Heart className="h-4 w-4 fill-white" /> : <Heart className="h-4 w-4" />}
                     </Button>
