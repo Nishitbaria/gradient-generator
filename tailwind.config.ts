@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 import tailwindAnimate from 'tailwindcss-animate';
 
-const config: Config = {
+const config = {
     darkMode: "class",
     content: [
         "./pages/**/*.{ts,tsx}",
@@ -75,6 +75,10 @@ const config: Config = {
             },
         },
         extend: {
+            fontFamily: {
+                sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                heading: ['var(--font-montserrat)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
@@ -129,9 +133,13 @@ const config: Config = {
                 "accordion-down": "accordion-down 0.2s ease-out",
                 "accordion-up": "accordion-up 0.2s ease-out",
             },
+            // Improved hover states
+            transitionProperty: {
+                'hover': 'background-color, border-color, color, transform, box-shadow',
+            },
         },
     },
     plugins: [tailwindAnimate],
-};
+} as Config;
 
 export default config; 

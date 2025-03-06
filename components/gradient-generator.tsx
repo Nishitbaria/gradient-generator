@@ -30,12 +30,12 @@ export default function GradientGenerator() {
       mobileProps={{
         transition: { duration: 0.3 },
       }}
-      className="w-full max-w-4xl mx-auto flex flex-col gap-4 md:gap-8 px-4 md:px-6 pb-16 md:pb-24"
+      className="w-full max-w-4xl mx-auto flex flex-col gap-6 md:gap-10 px-4 md:px-6 pb-16 md:pb-24"
     >
       {/* Title Section - Mobile Optimized */}
-      <div className="text-center mb-4 md:mb-8 mt-4 md:mt-6">
+      <div className="text-center mb-6 md:mb-10 mt-6 md:mt-8">
         <h1
-          className="text-2xl md:text-5xl font-bold mb-2 md:mb-4 bg-clip-text text-transparent animate-aurora"
+          className="text-3xl md:text-5xl font-heading font-bold mb-3 md:mb-4 bg-clip-text text-transparent animate-aurora"
           style={{
             background: "linear-gradient(to right, #86efac, #3b82f6, #a855f7)",
             WebkitBackgroundClip: "text",
@@ -43,16 +43,16 @@ export default function GradientGenerator() {
         >
           Gradient Generator
         </h1>
-        <p className="text-gray-400 text-sm md:text-lg max-w-xl mx-auto px-2 md:px-4">
+        <p className="text-gray-400 text-base md:text-lg max-w-xl mx-auto px-2 md:px-4 leading-relaxed">
           Create beautiful gradients for your next project with this interactive tool
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 md:gap-3 justify-center md:justify-end w-full">
+      <div className="flex flex-wrap gap-3 justify-center md:justify-end w-full">
         <Button
           variant="outline"
           size={isMobile ? "sm" : "default"}
-          className="w-full sm:w-auto bg-gray-800/50 border-gray-700 text-white hover:bg-gray-700/50"
+          className="w-full sm:w-auto bg-gray-800/60 border-gray-700 text-white hover:bg-gray-700/60 shadow-sm"
           onClick={() => setShowExtractor(!showExtractor)}
         >
           <Palette className="h-4 w-4 mr-2" />
@@ -87,13 +87,13 @@ export default function GradientGenerator() {
         <GradientControls />
       </div>
 
-      <div className="w-full">
+      <div className="w-full mt-2 md:mt-4">
         <GradientPreviewTabs />
       </div>
 
       {/* Only render AccessibilityChecker on non-mobile devices */}
       {!isMobile && (
-        <div className="w-full">
+        <div className="w-full mt-2 md:mt-4">
           <AccessibilityChecker />
         </div>
       )}

@@ -4,7 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Github, Menu, X, Twitter, ExternalLink } from "lucide-react"
+import { Github, Menu, X, Twitter, ExternalLink, Palette, BookOpen, Info } from "lucide-react"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -13,24 +13,41 @@ export function Navbar() {
     setIsMenuOpen(!isMenuOpen)
   }
 
-  const navLinks = []
+  // Added meaningful navigation items
+  const navLinks = [
+    { name: "Home", href: "/", icon: <Palette className="h-4 w-4 mr-2" /> },
+    { name: "Documentation", href: "#", icon: <BookOpen className="h-4 w-4 mr-2" /> },
+    { name: "About", href: "#", icon: <Info className="h-4 w-4 mr-2" /> },
+  ]
 
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-app-background/80 dark:bg-black/20 backdrop-blur-xl border-b border-app-card-border dark:border-white/5"
+      className="fixed top-0 left-0 right-0 z-50 bg-app-background/90 dark:bg-black/30 backdrop-blur-xl border-b border-app-card-border dark:border-white/10"
     >
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-linear-to-br gradient-from-gray-700 gradient-via-gray-500 gradient-to-gray-900"></div>
-            <span className="font-bold text-app-foreground dark:text-white text-xl">GradientLab</span>
+            <span className="font-heading font-bold text-app-foreground dark:text-white text-xl">GradientLab</span>
           </Link>
 
           {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="flex items-center text-app-muted-foreground dark:text-gray-300 hover:text-app-foreground dark:hover:text-white transition-colors"
+              >
+                {link.icon}
+                {link.name}
+              </Link>
+            ))}
+          </div>
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
@@ -60,6 +77,14 @@ export function Navbar() {
                 </Link>
               </Button>
             </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                className="bg-primary hover:bg-primary/90 text-white"
+                size="sm"
+              >
+                Get Started
+              </Button>
+            </motion.div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -85,7 +110,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-app-card/90 dark:bg-gray-900/90 backdrop-blur-lg border-b border-app-card-border dark:border-white/5"
+            className="md:hidden bg-app-card/95 dark:bg-gray-900/95 backdrop-blur-lg border-b border-app-card-border dark:border-white/10"
           >
             <div className="container mx-auto px-4 py-4">
               <nav className="flex flex-col gap-4">
@@ -98,9 +123,10 @@ export function Navbar() {
                   >
                     <Link
                       href={link.href}
-                      className="block py-2 text-gray-300 hover:text-white transition-colors"
+                      className="flex items-center py-2 text-gray-300 hover:text-white transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
+                      {link.icon}
                       {link.name}
                     </Link>
                   </motion.div>
@@ -140,7 +166,7 @@ export function Navbar() {
                   transition={{ delay: (navLinks.length + 1) * 0.1 }}
                   className="pt-2"
                 >
-                  <Button className="w-full bg-gray-800 hover:bg-gray-700 text-white" asChild>
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-white" asChild>
                     <Link href="#" className="flex items-center justify-center gap-1">
                       <span>Get Started</span>
                       <ExternalLink className="h-4 w-4" />

@@ -24,7 +24,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-linear-to-br gradient-from-gray-950 gradient-to-black flex flex-col items-center justify-center p-4 py-32 pb-40">
+      <main className="min-h-screen bg-linear-to-br gradient-from-gray-950 gradient-to-black flex flex-col items-center justify-center p-4 py-24 md:py-32 pb-32 md:pb-40">
         <Suspense
           fallback={
             <div className="w-full max-w-4xl mx-auto animate-pulse">
@@ -34,6 +34,8 @@ export default function Home() {
         >
           <GradientGenerator />
         </Suspense>
+
+        <div className="w-full py-8 md:py-12"></div>
 
         <CuratedGradients />
       </main>
