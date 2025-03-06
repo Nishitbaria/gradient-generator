@@ -16,9 +16,34 @@ export function ComponentPreview() {
 
   // Copy gradient class to clipboard
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(gradientClass())
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(gradientClass()).then(() => {
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2000)
+        })
+      } else {
+        // Fallback for browsers that don't support the Clipboard API
+        const textArea = document.createElement("textarea")
+        textArea.value = gradientClass()
+        textArea.style.position = "fixed"
+        textArea.style.left = "-999999px"
+        textArea.style.top = "-999999px"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        try {
+          document.execCommand('copy')
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2000)
+        } catch (err) {
+          console.error('Failed to copy text: ', err)
+        }
+        textArea.remove()
+      }
+    } catch (err) {
+      console.error('Failed to copy: ', err)
+    }
   }
 
   return (

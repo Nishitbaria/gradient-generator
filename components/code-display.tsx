@@ -7,7 +7,7 @@ import { motion } from "framer-motion"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 
 // Tailwind color mapping to hex values
-const TAILWIND_COLORS = {
+const TAILWIND_COLORS: { [key: string]: string } = {
   // Slate
   "slate-50": "#f8fafc",
   "slate-100": "#f1f5f9",
@@ -423,9 +423,34 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
   const [copied, setCopied] = useState<string | null>(null)
 
   const copyToClipboard = (text: string, format: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(format)
-    setTimeout(() => setCopied(null), 2000)
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+          setCopied(format)
+          setTimeout(() => setCopied(null), 2000)
+        })
+      } else {
+        // Fallback for browsers that don't support the Clipboard API
+        const textArea = document.createElement("textarea")
+        textArea.value = text
+        textArea.style.position = "fixed"
+        textArea.style.left = "-999999px"
+        textArea.style.top = "-999999px"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        try {
+          document.execCommand('copy')
+          setCopied(format)
+          setTimeout(() => setCopied(null), 2000)
+        } catch (err) {
+          console.error('Failed to copy text: ', err)
+        }
+        textArea.remove()
+      }
+    } catch (err) {
+      console.error('Failed to copy: ', err)
+    }
   }
 
   return (

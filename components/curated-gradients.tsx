@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Copy, LayoutGrid, Palette, X, Check, Heart, Share2, BookmarkIcon, ChevronDown } from "lucide-react"
+import { Copy, LayoutGrid, Palette, X, Check, Heart, BookmarkIcon, ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useIsMobile, useDevicePerformance } from "@/lib/hooks/use-device-detection"
@@ -366,7 +366,6 @@ export function CuratedGradients() {
   const colorPickerRef = useRef<HTMLDivElement>(null)
   const layoutMenuRef = useRef<HTMLDivElement>(null)
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
-  const [copiedShareIndex, setCopiedShareIndex] = useState<number | null>(null)
 
   // Update layout when mobile status changes
   useEffect(() => {
@@ -392,55 +391,33 @@ export function CuratedGradients() {
 
   const copyGradient = (gradient: string, index: number) => {
     try {
-      navigator.clipboard.writeText(gradient)
-      setCopiedIndex(index)
-      setTimeout(() => setCopiedIndex(null), 2000) // Reset after 2 seconds
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(gradient).then(() => {
+          setCopiedIndex(index)
+          setTimeout(() => setCopiedIndex(null), 2000)
+        })
+      } else {
+        // Fallback for browsers that don't support the Clipboard API
+        const textArea = document.createElement("textarea")
+        textArea.value = gradient
+        textArea.style.position = "fixed"
+        textArea.style.left = "-999999px"
+        textArea.style.top = "-999999px"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        try {
+          document.execCommand('copy')
+          setCopiedIndex(index)
+          setTimeout(() => setCopiedIndex(null), 2000)
+        } catch (err) {
+          console.error('Failed to copy text: ', err)
+        }
+        textArea.remove()
+      }
     } catch (err) {
-      console.error("Failed to copy: ", err)
-      // Could add error feedback here
+      console.error('Failed to copy: ', err)
     }
-  }
-
-  // Generate shareable link
-  const shareGradient = (gradient: Gradient, index: number) => {
-    const params = new URLSearchParams()
-    params.set("dir", "br") // Default to bottom-right
-    params.set("from", gradient.from)
-    if (gradient.via) params.set("via", gradient.via)
-    params.set("to", gradient.to)
-
-    const shareableUrl = `${window.location.origin}${window.location.pathname}?${params.toString()}`
-
-    // Use Web Share API on mobile if available
-    if (isMobile && navigator.share) {
-      navigator
-        .share({
-          title: "Tailwind Gradient",
-          text: "Check out this gradient I created!",
-          url: shareableUrl,
-        })
-        .catch((err) => {
-          // Fallback to clipboard if share fails
-          navigator.clipboard.writeText(shareableUrl).then(() => {
-            setCopiedShareIndex(index)
-            setTimeout(() => setCopiedShareIndex(null), 2000)
-          })
-        })
-      return
-    }
-
-    // Default clipboard behavior
-    navigator.clipboard
-      .writeText(shareableUrl)
-      .then(() => {
-        // Show feedback that URL was copied
-        setCopiedShareIndex(index)
-        setTimeout(() => setCopiedShareIndex(null), 2000)
-      })
-      .catch((err) => {
-        console.error("Failed to copy URL:", err)
-        alert("Failed to copy link. Please try again.")
-      })
   }
 
   // Filter gradients based on selected color
@@ -667,14 +644,6 @@ export function CuratedGradients() {
                       onClick={() => toggleFavorite(gradient)}
                     >
                       {isFavorite(gradient) ? <Heart className="h-4 w-4 fill-white" /> : <Heart className="h-4 w-4" />}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="bg-white/20 backdrop-blur-md hover:bg-white/30 text-white"
-                      onClick={() => shareGradient(gradient, index)}
-                    >
-                      {copiedShareIndex === index ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
                     </Button>
                   </div>
                 </OptimizedMotion>
