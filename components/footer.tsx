@@ -1,35 +1,84 @@
 "use client"
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { Trash2 } from "lucide-react"
+import { Github, Twitter } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useState } from "react"
+
+interface TextHoverEffectProps {
+  children: React.ReactNode
+  className?: string
+}
+
+export function TextHoverEffect({ children, className }: TextHoverEffectProps) {
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <div
+      className={cn("relative overflow-hidden inline-block", className)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className={cn(
+          "transition-transform duration-300 ease-in-out",
+          isHovered ? "-translate-y-full" : "translate-y-0"
+        )}
+      >
+        {children}
+      </div>
+      <div
+        className={cn(
+          "absolute top-0 left-0 transition-transform duration-300 ease-in-out text-primary",
+          isHovered ? "translate-y-0" : "translate-y-full"
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
 
 export function Footer() {
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-      className="bg-app-background dark:bg-black border-t border-app-card-border dark:border-white/10"
-    >
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-app-foreground/70 dark:text-white/70 text-sm">
+    <footer className="bg-app-background dark:bg-black border-t border-app-card-border dark:border-white/10">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex justify-between items-center">
+          <div className="text-app-foreground/70 dark:text-white/70 text-sm">
             © {new Date().getFullYear()} GradientLab. All rights reserved.
-          </p>
-          <Link href="/clear-storage.html" target="_blank">
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 text-xs text-white/70 hover:text-white"
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-app-foreground/70 dark:text-white/70 text-sm">
+              Built by
+            </span>
+            <TextHoverEffect className="text-sm font-medium mr-2">
+              Nishitbaria
+            </TextHoverEffect>
+
+            <Link
+              href="https://github.com/Nishitbaria"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-app-foreground/70 hover:text-primary dark:text-white/70 dark:hover:text-primary transition-colors"
+              aria-label="GitHub"
             >
-              <Trash2 className="h-3 w-3 mr-1" />
-              Clear Storage
-            </Button>
-          </Link>
+              <Github size={20} />
+            </Link>
+
+            <Link
+              href="https://twitter.com/nishitbaria1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-app-foreground/70 hover:text-primary dark:text-white/70 dark:hover:text-primary transition-colors"
+              aria-label="Twitter"
+            >
+              <Twitter size={20} />
+            </Link>
+          </div>
         </div>
       </div>
-    </motion.footer>
+    </footer>
   )
 }
 

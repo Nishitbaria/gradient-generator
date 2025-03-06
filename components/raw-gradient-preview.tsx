@@ -1,56 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Copy, Check, Code } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
-import { CodeDisplay } from "@/components/code-display"
 import { useGradientStore } from "@/lib/store"
+import { ExportDialog } from "@/components/export-dialog"
 
 export function RawGradientPreview() {
-  const [copied, setCopied] = useState(false)
-  const [showCode, setShowCode] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
-  const { gradientClass, cssGradient } = useGradientStore()
-
-  // Copy gradient class to clipboard
-  const copyToClipboard = () => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(gradientClass()).then(() => {
-          setCopied(true)
-          setTimeout(() => setCopied(false), 2000)
-        })
-      } else {
-        // Fallback for browsers that don't support the Clipboard API
-        const textArea = document.createElement("textarea")
-        textArea.value = gradientClass()
-        textArea.style.position = "fixed"
-        textArea.style.left = "-999999px"
-        textArea.style.top = "-999999px"
-        document.body.appendChild(textArea)
-        textArea.focus()
-        textArea.select()
-        try {
-          document.execCommand('copy')
-          setCopied(true)
-          setTimeout(() => setCopied(false), 2000)
-        } catch (err) {
-          console.error('Failed to copy text: ', err)
-        }
-        textArea.remove()
-      }
-    } catch (err) {
-      console.error('Failed to copy: ', err)
-    }
-  }
+  const { cssGradient } = useGradientStore()
 
   return (
     <motion.div
       className="relative w-full overflow-hidden rounded-2xl shadow-lg"
       initial={{ height: 200 }}
-      animate={{ height: showCode ? 320 : 200 }}
+      animate={{ height: 200 }}
       transition={{ duration: 0.3 }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -75,38 +38,7 @@ export function RawGradientPreview() {
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
           >
-            <Button
-              size="sm"
-              variant="secondary"
-              className="bg-app-accent/20 dark:bg-white/20 backdrop-blur-md hover:bg-app-accent/30 dark:hover:bg-white/30 text-app-foreground dark:text-white"
-              onClick={() => setShowCode(!showCode)}
-            >
-              <Code className="h-4 w-4 mr-2" />
-              {showCode ? "Hide Code" : "Show Code"}
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="bg-app-accent/20 dark:bg-white/20 backdrop-blur-md hover:bg-app-accent/30 dark:hover:bg-white/30 text-app-foreground dark:text-white"
-              onClick={copyToClipboard}
-            >
-              {copied ? <Check className="h-4 w-4 mr-2" /> : <Copy className="h-4 w-4 mr-2" />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showCode && (
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md p-4 border-t border-white/10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <CodeDisplay code={gradientClass()} />
+            <ExportDialog />
           </motion.div>
         )}
       </AnimatePresence>
