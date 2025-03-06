@@ -3,6 +3,7 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { CuratedGradients } from "@/components/curated-gradients"
 import { Suspense } from "react"
+import type { Metadata } from "next"
 
 // Dynamically import components that aren't needed for initial render
 // This helps reduce the initial bundle size for mobile devices
@@ -19,6 +20,22 @@ const GradientGenerator = dynamic(() => import("@/components/gradient-generator"
 const ClientComponents = dynamic(() => import("@/components/client-components"), {
   ssr: true,
 })
+
+export const metadata: Metadata = {
+  title: "Create Beautiful CSS Gradients",
+  description: "Interactive tool to create, customize, and export beautiful Tailwind CSS gradients for your web projects. Features real-time preview, accessibility checking, and multiple export options.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Create Beautiful CSS Gradients with Tailwind",
+    description: "Interactive tool to create, customize, and export beautiful Tailwind CSS gradients for your web projects.",
+    url: "https://gradient.nishitbaria.tech",
+  },
+  twitter: {
+    creator: "@nishitbaria",
+  },
+}
 
 export default function Home() {
   return (

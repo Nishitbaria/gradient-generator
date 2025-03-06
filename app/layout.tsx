@@ -1,6 +1,6 @@
 import type React from "react"
 import "./globals.css"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, Montserrat } from "next/font/google"
 import { ThemeProvider } from "next-themes"
 
@@ -16,11 +16,65 @@ const montserrat = Montserrat({
   variable: '--font-montserrat',
 })
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+}
+
 export const metadata: Metadata = {
-  title: "Tailwind Gradient Generator | GradientLab",
-  description: "Create beautiful Tailwind CSS gradients with ease",
-  manifest: "/manifest.json", // Add this line for PWA support
-  generator: 'v0.dev'
+  title: {
+    template: "%s | Tailwind Gradient Generator",
+    default: "Tailwind Gradient Generator | Create Beautiful CSS Gradients",
+  },
+  description: "Create, customize and export beautiful Tailwind CSS gradients with our interactive tool. Perfect for web designers and developers.",
+  manifest: "/manifest.json",
+  generator: 'v0.dev',
+  keywords: ["tailwind", "css", "gradient", "generator", "design", "web development", "color", "tool"],
+  authors: [{ name: "Nishit Baria", url: "https://gradient.nishitbaria.tech/" }],
+  creator: "Nishit Baria",
+  publisher: "GradientLab",
+  formatDetection: {
+    telephone: false,
+  },
+  metadataBase: new URL("https://gradient.nishitbaria.tech"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Tailwind Gradient Generator | Create Beautiful CSS Gradients",
+    description: "Create, customize and export beautiful Tailwind CSS gradients with our interactive tool. Perfect for web designers and developers.",
+    url: "https://gradient.nishitbaria.tech",
+    siteName: "GradientLab",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Tailwind Gradient Generator Preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tailwind Gradient Generator | Create Beautiful CSS Gradients",
+    description: "Create, customize and export beautiful Tailwind CSS gradients with our interactive tool.",
+    creator: "@nishitbaria",
+    images: ["/twitter-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 }
 
 export default function RootLayout({
