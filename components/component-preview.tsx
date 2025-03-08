@@ -12,7 +12,7 @@ export function ComponentPreview() {
   const { componentType, setComponentType, gradientClass, cssGradient } = useGradientStore()
 
   return (
-    <div className="bg-app-muted/30 dark:bg-gray-900/30 rounded-2xl border border-app-card-border dark:border-white/5 p-4">
+    <div className="bg-app-muted/30 dark:bg-gray-900/30 rounded-2xl border border-app-card-border dark:border-white/5 p-4 relative">
       <div className="flex gap-3 mb-5 overflow-x-auto pb-2 scrollbar-thin">
         {[
           { value: "card", label: "Card", icon: <Layers className="h-4 w-4" /> },
@@ -49,7 +49,7 @@ export function ComponentPreview() {
         <GradientPreview type={componentType} gradientClass={gradientClass()} cssGradient={cssGradient()} />
       </motion.div>
 
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end mt-4 relative z-20 pointer-events-auto">
         <ExportDialog />
       </div>
     </div>

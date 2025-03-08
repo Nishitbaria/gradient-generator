@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CodeDisplay } from "@/components/code-display"
 import { useGradientStore } from "@/lib/store"
-import { Copy, Check, Download, Code, Image, FileCode } from "lucide-react"
+import { Copy, Check, Download, Code, Image, FileCode, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 import {
     Modal,
     ModalTrigger,
@@ -14,7 +15,6 @@ import {
     ModalContent,
     ModalFooter
 } from "@/components/ui/animated-modal"
-import { motion } from "framer-motion"
 
 type ExportFormat = "code" | "svg" | "image"
 
@@ -329,7 +329,7 @@ export function ExportDialog() {
 
     return (
         <Modal>
-            <ModalTrigger className="bg-app-accent/20 dark:bg-white/20 backdrop-blur-md hover:bg-app-accent/30 dark:hover:bg-white/30 text-app-foreground dark:text-white py-2 px-4 rounded-md text-sm font-medium">
+            <ModalTrigger className="bg-app-accent/20 dark:bg-white/20 backdrop-blur-md hover:bg-app-accent/30 dark:hover:bg-white/30 text-app-foreground dark:text-white py-2 px-4 rounded-md text-sm font-medium relative z-30 pointer-events-auto">
                 Export
             </ModalTrigger>
             <ModalBody>
