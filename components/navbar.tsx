@@ -58,7 +58,7 @@ export function Navbar() {
                 className="text-app-muted-foreground dark:text-gray-300 hover:text-app-foreground dark:hover:text-white hover:bg-app-muted/50 dark:hover:bg-white/10"
                 asChild
               >
-                <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://github.com/Nishitbaria" target="_blank" rel="noopener noreferrer">
                   <Github className="h-5 w-5" />
                   <span className="sr-only">GitHub</span>
                 </Link>
@@ -71,7 +71,7 @@ export function Navbar() {
                 className="text-app-muted-foreground dark:text-gray-300 hover:text-app-foreground dark:hover:text-white hover:bg-app-muted/50 dark:hover:bg-white/10"
                 asChild
               >
-                <Link href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                <Link href="https://twitter.com/Nishitbaria1" target="_blank" rel="noopener noreferrer">
                   <Twitter className="h-5 w-5" />
                   <span className="sr-only">Twitter</span>
                 </Link>
