@@ -54,19 +54,20 @@ export function Footer() {
           <div>
             <h3 className="font-heading text-lg font-semibold mb-3 text-app-foreground dark:text-white">Links</h3>
             <ul className="space-y-2">
+
               <li>
-                <Link href="/" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
-                  Home
+                <Link href="https://github.com/Nishitbaria" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
+                  Github
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
-                  Documentation
+                <Link href="https://x.com/Nishitbaria1" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
+                  X
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
-                  About
+                <Link href="https://www.linkedin.com/in/nishitbaria/" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
+                  LinkedIn
                 </Link>
               </li>
             </ul>
@@ -76,29 +77,9 @@ export function Footer() {
             <h3 className="font-heading text-lg font-semibold mb-3 text-app-foreground dark:text-white">Contact</h3>
             <div className="flex items-center gap-2 mb-2">
               <Mail className="h-4 w-4 text-app-foreground/70 dark:text-white/70" />
-              <a href="mailto:contact@gradientlab.dev" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
-                contact@gradientlab.dev
+              <a href="mailto:nishitbaria@gmail.com" className="text-app-foreground/80 dark:text-white/80 hover:text-primary dark:hover:text-primary transition-colors text-sm">
+                nishitbaria@gmail.com
               </a>
-            </div>
-            <div className="flex items-center gap-3 mt-4">
-              <Link
-                href="https://github.com/Nishitbaria"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-app-foreground/70 hover:text-primary dark:text-white/70 dark:hover:text-primary transition-colors p-2 rounded-full hover:bg-app-muted/50 dark:hover:bg-white/5"
-                aria-label="GitHub"
-              >
-                <Github size={20} />
-              </Link>
-              <Link
-                href="https://twitter.com/nishitbaria1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-app-foreground/70 hover:text-primary dark:text-white/70 dark:hover:text-primary transition-colors p-2 rounded-full hover:bg-app-muted/50 dark:hover:bg-white/5"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </Link>
             </div>
           </div>
         </div>

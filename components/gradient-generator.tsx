@@ -41,7 +41,7 @@ export default function GradientGenerator() {
             WebkitBackgroundClip: "text",
           }}
         >
-          Gradient Generator
+          Tailwind Gradient Generator
         </h1>
         <p className="text-gray-400 text-base md:text-lg max-w-xl mx-auto px-2 md:px-4 leading-relaxed">
           Create beautiful gradients for your next project with this interactive tool
