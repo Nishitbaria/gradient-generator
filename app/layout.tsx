@@ -63,7 +63,12 @@ export const metadata: Metadata = {
     title: "Tailwind Gradient Generator | Create Beautiful CSS Gradients",
     description: "Create, customize and export beautiful Tailwind CSS gradients with our interactive tool.",
     creator: "@nishitbaria",
-    images: ["/twitter-image.png"],
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "favicon.ico",
   },
   robots: {
     index: true,
